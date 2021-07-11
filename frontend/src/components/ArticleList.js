@@ -21,7 +21,7 @@ function ArticleList({ posts }) {
               width: "18rem",
             }}
           >
-            {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+            <Card.Img variant="top" src={`/uploads/${posts.articleImage}`} />
             <Card.Body>
               <Card.Title>{posts.title}</Card.Title>
               <hr />

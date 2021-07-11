@@ -8,28 +8,32 @@ function Create() {
   const [authorname, setAuthorname] = useState("");
   const [article, setArticle] = useState("");
   const [message, setMessage] = useState("");
+  const [fileName, setFileName] = useState("");
+
+  const onChangeFile = (e) => {
+    setFileName(e.target.files[0]);
+  };
 
   function submit(e) {
     e.preventDefault();
-    const data = {
-      title,
-      authorname,
-      article,
-    };
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("authorname", authorname);
+    formData.append("article", article);
+    formData.append("articleImage", fileName);
 
     setTitle("");
     setArticle("");
     setAuthorname("");
 
     axios
-      .post("/articles/create", data)
+      .post("/articles/create", formData)
       .then((res) => setMessage(res.data))
       .catch((err) => console.log(err));
-    console.log(data);
   }
 
   return (
-    <Form className="container" onSubmit={submit} encType>
+    <Form className="container" onSubmit={submit} encType="multipart/form.data">
       <Form.Group controlId="exampleForm.ControlInput1">
         <span>{message}</span>
         <Form.Label>Title</Form.Label>
@@ -63,6 +67,16 @@ function Create() {
           onChange={(e) => setArticle(e.target.value)}
         />
       </Form.Group>
+
+      <Form.Group>
+        <Form.Label>Example textarea</Form.Label>
+        <Form.File
+          id="exampleFormControlFile1"
+          filename="articleImage"
+          onChange={onChangeFile}
+        />
+      </Form.Group>
+
       <Button variant="primary" type="submit">
         Submit
       </Button>

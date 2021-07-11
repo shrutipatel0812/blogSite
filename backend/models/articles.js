@@ -5,6 +5,7 @@ const articleSchema = new Schema({
   title: { type: String, required: true },
   article: { type: String, require: true },
   authorname: { type: String, require: true },
+  articleImage: { type: String, require: true },
 });
 
 const Articles = mongoose.model("Article", articleSchema);

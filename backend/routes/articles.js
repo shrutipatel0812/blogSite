@@ -1,6 +1,18 @@
 const express = require("express");
 const router = express.Router();
 const Articles = require("../models/articles");
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, "../frontend/public/uploads");
+  },
+  filename: (req, file, callback) => {
+    callback(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.get("/", (req, res) => {
   Articles.find()
@@ -8,14 +20,16 @@ router.get("/", (req, res) => {
     .catch((err) => res.status(400).json(`Error : ${err} `));
 });
 
-router.post("/create", async (req, res) => {
+router.post("/create", upload.single("articleImage"), async (req, res) => {
   const { title, article, authorname } = req.body;
 
   const newArticle = new Articles({
     title,
     article,
     authorname,
+    articleImage: req.file.originalname,
   });
+  console.log(newArticle);
   newArticle
     .save()
     .then(() => res.json("The new Article posted successfully ."))
@@ -30,12 +44,13 @@ router.get("/:id", (req, res) => {
     .catch((err) => res.status(400).json(`Error: ${err}`));
 });
 
-router.put("/update/:id", (req, res) => {
+router.put("/update/:id", upload.single("articleImage"), (req, res) => {
   Articles.findById(req.params.id)
     .then((article) => {
       article.title = req.body.title;
       article.article = req.body.article;
       article.authorname = req.body.authorname;
+      article.articleImage = req.file.originalname;
 
       article
         .save()
